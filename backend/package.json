@@ -4,17 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  "dev": "nodemon index.js",
-  "start": "node index.js"
-},
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "postinstall": "prisma skills sync || exit 0"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@prisma/client": "^6.19.3",
     "express": "^5.2.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "prisma": "^6.19.3"
   }
 }
