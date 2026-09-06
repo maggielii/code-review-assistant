@@ -22,3 +22,27 @@ export async function registerUser(email, password) {
 
   return user;
 }
+
+export async function loginUser(email, password) {
+    const user = await prisma.user.findUnique({
+      where: { email: email },
+    });
+  
+    if (!user) {
+      throw new Error("INVALID_CREDENTIALS");
+    }
+  
+    const passwordMatches = await bcrypt.compare(password, user.passwordHash);
+  
+    if (!passwordMatches) {
+      throw new Error("INVALID_CREDENTIALS");
+    }
+  
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+  
+    return token;
+  }
