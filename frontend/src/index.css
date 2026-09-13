@@ -1,0 +1,28 @@
+:root {
+    --gray-900: #17181B;
+    --gray-800: #1E2023;
+    --gray-700: #26282C;
+    --gray-600: #313338;
+    --gray-500: #45474D;
+  
+    --text-primary: #F2F2F0;
+    --text-secondary: #9A9CA2;
+  
+    --primary: #8FB8F0;
+    --success: #7FDCC0;
+    --error: #D1567A;
+    --warning: #F0CE8F;
+    --info: #F0A868;
+    --highlight: #FA98BB;
+}
+  
+* {
+    box-sizing: border-box;
+}
+  
+body {
+    margin: 0;
+    background: #050506;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-primary);
+}

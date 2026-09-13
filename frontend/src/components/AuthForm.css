@@ -1,0 +1,35 @@
+.card input {
+    width: 100%;
+    background: var(--gray-600);
+    border: none;
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-family: 'Quicksand', sans-serif;
+    font-size: 12.5px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+  }
+  .error-text {
+    color: var(--error);
+    font-size: 12px;
+    margin: 4px 0 10px;
+  }
+  .switch-link {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-top: 12px;
+    cursor: pointer;
+  }
+  button.primary {
+    width: 100%;
+    background: var(--primary);
+    color: #061224;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 0;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Quicksand', sans-serif;
+    cursor: pointer;
+  }
