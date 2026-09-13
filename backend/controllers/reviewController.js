@@ -1,4 +1,4 @@
-import { analyzeCode } from "../services/reviewService.js";
+import { analyzeCode, resolveFinding } from "../services/reviewService.js";
 import prisma from "../lib/prisma.js";
 
 export async function createReview(req, res) {
@@ -34,6 +34,23 @@ export async function createReview(req, res) {
       res.status(502).json({ error: "Could not reach the AI service. Please try again." });
     } else if (error.message === "AI_RESPONSE_INVALID") {
       res.status(502).json({ error: "The AI returned an unexpected response. Please try again." });
+    } else {
+      res.status(500).json({ error: "Something went wrong. Please try again." });
+    }
+  }
+}
+
+export async function resolveFindingController(req, res) {
+  const findingId = parseInt(req.params.id);
+
+  try {
+    const updated = await resolveFinding(findingId, req.userId);
+    res.status(200).json(updated);
+  } catch (error) {
+    if (error.message === "FINDING_NOT_FOUND") {
+      res.status(404).json({ error: "Finding not found." });
+    } else if (error.message === "FORBIDDEN") {
+      res.status(403).json({ error: "You don't have access to this finding." });
     } else {
       res.status(500).json({ error: "Something went wrong. Please try again." });
     }

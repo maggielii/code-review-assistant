@@ -40,6 +40,7 @@ model Finding {
   severity   String
   message    String
   suggestion String
+  resolved   Boolean  @default(false)
   reviewId   Int
   review     Review   @relation(fields: [reviewId], references: [id])
 }

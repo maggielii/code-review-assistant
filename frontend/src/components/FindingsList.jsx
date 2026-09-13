@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './FindingsList.css'
 
-function FindingsList({ findings }) {
+function FindingsList({ findings, onResolve }) {
   const [resolvedIds, setResolvedIds] = useState([])
 
   if (!findings || findings.length === 0) return null
@@ -10,6 +10,7 @@ function FindingsList({ findings }) {
 
   function handleResolve(id) {
     setResolvedIds([...resolvedIds, id])
+    onResolve(id)
   }
 
   if (visible.length === 0) {

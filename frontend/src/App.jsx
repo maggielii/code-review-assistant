@@ -57,6 +57,17 @@ function App() {
     }
   }
 
+  async function handleResolve(findingId) {
+    try {
+      await fetch(`http://localhost:5050/api/reviews/findings/${findingId}`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${token}` },
+      })
+    } catch (err) {
+      console.error('Failed to resolve finding')
+    }
+  }
+
   return (
     <>
       <BackgroundDecoration />
@@ -76,7 +87,7 @@ function App() {
               isSubmitting={isSubmitting}
               error={submitError}
             />
-            <FindingsList findings={findings} />
+            <FindingsList findings={findings} onResolve={handleResolve} />
           </>
         )}
       </div>

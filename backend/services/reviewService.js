@@ -1,4 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
+import prisma from "../lib/prisma.js";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -71,4 +72,26 @@ export async function analyzeCode(code, language, mode, lineStart, lineEnd, user
     }
 
     return parsed.findings;
+  }
+
+  export async function resolveFinding(findingId, userId) {
+    const finding = await prisma.finding.findUnique({
+      where: { id: findingId },
+      include: { review: true },
+    });
+  
+    if (!finding) {
+      throw new Error("FINDING_NOT_FOUND");
+    }
+  
+    if (finding.review.userId !== userId) {
+      throw new Error("FORBIDDEN");
+    }
+  
+    const updated = await prisma.finding.update({
+      where: { id: findingId },
+      data: { resolved: true },
+    });
+  
+    return updated;
   }
