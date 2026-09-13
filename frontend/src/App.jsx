@@ -3,6 +3,7 @@ import BackgroundDecoration from './components/BackgroundDecoration.jsx'
 import ModeSelector from './components/ModeSelector.jsx'
 import CodeInputCard from './components/CodeInputCard.jsx'
 import AuthForm from './components/AuthForm.jsx'
+import FindingsList from './components/FindingsList.jsx'
 
 const MODES = [
   { id: 'review', title: 'Check', desc: 'Find bugs and style issues', icon: 'R', color: '#F0A868', bg: 'rgba(240,168,104,0.16)', textColor: '#3A2410' },
@@ -15,9 +16,45 @@ function App() {
   const [selectedMode, setSelectedMode] = useState(MODES[0])
   const [code, setCode] = useState('')
   const [note, setNote] = useState('')
+  const [findings, setFindings] = useState([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
 
-  function handleSubmit() {
-    console.log('Submitting:', { code, note, mode: selectedMode.id })
+  async function handleSubmit() {
+    setSubmitError('')
+    setIsSubmitting(true)
+    const lineCount = code.split('\n').length
+
+    try {
+      const response = await fetch('http://localhost:5050/api/reviews', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          code,
+          language: 'javascript',
+          mode: selectedMode.id,
+          lineStart: 1,
+          lineEnd: lineCount,
+          userNote: note,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setSubmitError(data.error || 'Something went wrong')
+        return
+      }
+
+      setFindings(data.findings)
+    } catch (err) {
+      setSubmitError('Could not reach the server.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -36,7 +73,10 @@ function App() {
               setNote={setNote}
               selectedMode={selectedMode}
               onSubmit={handleSubmit}
+              isSubmitting={isSubmitting}
+              error={submitError}
             />
+            <FindingsList findings={findings} />
           </>
         )}
       </div>

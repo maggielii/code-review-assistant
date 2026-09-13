@@ -1,6 +1,6 @@
 import './CodeInputCard.css'
 
-function CodeInputCard({ code, setCode, note, setNote, selectedMode, onSubmit }) {
+function CodeInputCard({ code, setCode, note, setNote, selectedMode, onSubmit, isSubmitting, error }) {
   return (
     <div className="card">
       <div className="card-label">Your code</div>
@@ -11,6 +11,7 @@ function CodeInputCard({ code, setCode, note, setNote, selectedMode, onSubmit })
         onChange={(e) => setCode(e.target.value)}
         rows={8}
       />
+      {error && <p className="error-text">{error}</p>}
       <div className="row">
         <input
           type="text"
@@ -22,8 +23,9 @@ function CodeInputCard({ code, setCode, note, setNote, selectedMode, onSubmit })
           className="primary"
           style={{ background: selectedMode.bg, color: selectedMode.color }}
           onClick={onSubmit}
+          disabled={isSubmitting}
         >
-          {selectedMode.title}
+          {isSubmitting ? 'Analyzing...' : selectedMode.title}
         </button>
       </div>
     </div>

@@ -1,0 +1,12 @@
+.finding { display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid var(--gray-700); align-items: flex-start; }
+.finding:first-of-type { border-top: none; padding-top: 0; }
+.finding-icon { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; font-family: 'Quicksand', sans-serif; }
+.finding-icon.error { background: var(--error); color: #3A1613; }
+.finding-icon.info { background: var(--info); color: #3A2410; }
+.finding-text { flex: 1; }
+.finding-text p { margin: 0; font-size: 12.5px; line-height: 1.6; }
+.finding-text .msg { color: var(--text-primary); }
+.finding-text .loc { color: var(--text-secondary); font-family: 'JetBrains Mono', monospace; font-size: 10.5px; margin-top: 3px; }
+.resolve-btn { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--gray-600); background: transparent; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 12px; cursor: pointer; flex-shrink: 0; }
+.resolve-btn:hover { border-color: var(--success); color: var(--success); }
+.empty-text { color: var(--text-secondary); font-size: 12.5px; }
