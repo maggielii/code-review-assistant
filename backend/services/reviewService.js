@@ -1,7 +1,14 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import prisma from "../lib/prisma.js";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+//const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+let ai;
+function getAI() {
+  if (!ai) {
+    ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  }
+  return ai;
+}
 
 const findingsSchema = {
     type: Type.OBJECT,
@@ -29,7 +36,7 @@ export async function analyzeCode(code, language, mode, lineStart, lineEnd, user
   
     let response;
     try {
-      response = await ai.models.generateContent({
+        response = await getAI().models.generateContent({
         model: "gemini-3.6-flash",
         contents: prompt,
         config: {
