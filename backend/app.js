@@ -6,7 +6,12 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:5173" }));
+const allowedOrigins = [
+    "http://localhost:5173",
+    process.env.FRONTEND_URL,
+  ];
+  
+  app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/reviews", reviewRoutes);
