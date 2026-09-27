@@ -4,7 +4,7 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 import cors from 'cors'
 
 const app = express(); // the server
-const PORT = 5050;
+const PORT = process.env.PORT || 5050;
 
 app.use(cors({ origin: 'http://localhost:5173' }))
 app.use(express.json()); // middleware, express.json() parses text to JS object

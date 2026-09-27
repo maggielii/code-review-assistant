@@ -6,6 +6,7 @@ import AuthForm from './components/AuthForm.jsx'
 import FindingsList from './components/FindingsList.jsx'
 import HistoryPage from './components/HistoryPage.jsx'
 import TabBar from './components/TabBar.jsx'
+import { API_URL } from './config.js'
 
 const MODES = [
   { id: 'review', title: 'Check', desc: 'Find bugs and style issues', icon: 'R', color: '#F0A868', bg: 'rgba(240,168,104,0.16)', textColor: '#3A2410' },
@@ -29,7 +30,7 @@ function App() {
     const lineCount = code.split('\n').length
 
     try {
-      const response = await fetch('http://localhost:5050/api/reviews', {
+        const response = await fetch(`${API_URL}/api/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +63,7 @@ function App() {
 
   async function handleResolve(findingId) {
     try {
-      await fetch(`http://localhost:5050/api/reviews/findings/${findingId}`, {
+      await fetch(`${API_URL}/api/reviews/findings/${findingId}`, {
         method: 'PATCH',
         headers: { 'Authorization': `Bearer ${token}` },
       })

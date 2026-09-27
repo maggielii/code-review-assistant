@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import './HistoryPage.css'
+import { API_URL } from '../config.js'
 
 function HistoryPage({ token }) {
   const [reviews, setReviews] = useState([])
@@ -8,7 +9,7 @@ function HistoryPage({ token }) {
 
   useEffect(() => {
     async function loadReviews() {
-      const response = await fetch('http://localhost:5050/api/reviews', {
+        const response = await fetch(`${API_URL}/api/reviews`, {
         headers: { 'Authorization': `Bearer ${token}` },
       })
       const data = await response.json()
