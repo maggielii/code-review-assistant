@@ -4,6 +4,8 @@ import ModeSelector from './components/ModeSelector.jsx'
 import CodeInputCard from './components/CodeInputCard.jsx'
 import AuthForm from './components/AuthForm.jsx'
 import FindingsList from './components/FindingsList.jsx'
+import HistoryPage from './components/HistoryPage.jsx'
+import TabBar from './components/TabBar.jsx'
 
 const MODES = [
   { id: 'review', title: 'Check', desc: 'Find bugs and style issues', icon: 'R', color: '#F0A868', bg: 'rgba(240,168,104,0.16)', textColor: '#3A2410' },
@@ -19,6 +21,7 @@ function App() {
   const [findings, setFindings] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
+  const [activeTab, setActiveTab] = useState('review')
 
   async function handleSubmit() {
     setSubmitError('')
@@ -76,18 +79,27 @@ function App() {
           <AuthForm onAuthSuccess={(newToken) => setToken(newToken)} />
         ) : (
           <>
-            <ModeSelector modes={MODES} selectedId={selectedMode.id} onSelect={setSelectedMode} />
-            <CodeInputCard
-              code={code}
-              setCode={setCode}
-              note={note}
-              setNote={setNote}
-              selectedMode={selectedMode}
-              onSubmit={handleSubmit}
-              isSubmitting={isSubmitting}
-              error={submitError}
-            />
-            <FindingsList findings={findings} onResolve={handleResolve} />
+          <div className="fade-in" key={activeTab}>
+            {activeTab === 'review' ? (
+              <>
+                <ModeSelector modes={MODES} selectedId={selectedMode.id} onSelect={setSelectedMode} />
+                <CodeInputCard
+                  code={code}
+                  setCode={setCode}
+                  note={note}
+                  setNote={setNote}
+                  selectedMode={selectedMode}
+                  onSubmit={handleSubmit}
+                  isSubmitting={isSubmitting}
+                  error={submitError}
+                />
+                <FindingsList findings={findings} onResolve={handleResolve} />
+              </>
+            ) : (
+              <HistoryPage token={token} />
+            )}
+            </div>
+            <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
           </>
         )}
       </div>

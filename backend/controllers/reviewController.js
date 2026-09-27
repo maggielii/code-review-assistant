@@ -1,4 +1,4 @@
-import { analyzeCode, resolveFinding } from "../services/reviewService.js";
+import { analyzeCode, resolveFinding, getReviewsForUser } from "../services/reviewService.js";
 import prisma from "../lib/prisma.js";
 
 export async function createReview(req, res) {
@@ -56,3 +56,12 @@ export async function resolveFindingController(req, res) {
     }
   }
 }
+
+export async function getReviews(req, res) {
+    try {
+      const reviews = await getReviewsForUser(req.userId);
+      res.status(200).json(reviews);
+    } catch (error) {
+      res.status(500).json({ error: "Something went wrong. Please try again." });
+    }
+  }

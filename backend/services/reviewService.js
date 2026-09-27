@@ -95,3 +95,13 @@ export async function analyzeCode(code, language, mode, lineStart, lineEnd, user
   
     return updated;
   }
+
+  export async function getReviewsForUser(userId) {
+    const reviews = await prisma.review.findMany({
+      where: { userId: userId },
+      include: { findings: true },
+      orderBy: { createdAt: "desc" },
+    });
+  
+    return reviews;
+  }
