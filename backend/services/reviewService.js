@@ -25,52 +25,58 @@ const findingsSchema = {
 };
 
 export async function analyzeCode(code, language, mode, lineStart, lineEnd, userNote) {
-    const lines = code.split("\n");
-    const selectedSnippet = lines.slice(lineStart - 1, lineEnd).join("\n");
-
-    let noteSection = "";
-    if (userNote) {
-        noteSection = `The user added this note about what they want help with: "${userNote}"`;
-    }
-
-    const prompt = 
-    `You are a code review assistant. The user selected lines ${lineStart}-${lineEnd} of the following ${language} code and requested: ${mode}.
-
-    ${noteSection}
-
-    Full code:
-    ${code}
-
-    Selected snippet (lines ${lineStart}-${lineEnd}):
-    ${selectedSnippet}
-
-    Analyze only the selected snippet, using the full code as context. Return findings as structured data.`;
-
+    const prompt = buildPrompt(code, language, mode, lineStart, lineEnd, userNote);
+  
     let response;
     try {
-    response = await ai.models.generateContent({
+      response = await ai.models.generateContent({
         model: "gemini-3.6-flash",
         contents: prompt,
         config: {
-            responseMimeType: "application/json",
-            responseSchema: findingsSchema,
+          responseMimeType: "application/json",
+          responseSchema: findingsSchema,
         },
-    });
+      });
     } catch (error) {
-        throw new Error("AI_REQUEST_FAILED");
+      throw new Error("AI_REQUEST_FAILED");
     }
-
+  
     let parsed;
     try {
-        parsed = JSON.parse(response.text);
+      parsed = JSON.parse(response.text);
     } catch (error) {
-        throw new Error("AI_RESPONSE_INVALID");
+      throw new Error("AI_RESPONSE_INVALID");
     }
+  
+    return validateFindings(parsed);
+  }
 
-    if (!Array.isArray(parsed.findings)) {
-        throw new Error("AI_RESPONSE_INVALID");
+  export function buildPrompt(code, language, mode, lineStart, lineEnd, userNote) {
+    const lines = code.split("\n");
+    const selectedSnippet = lines.slice(lineStart - 1, lineEnd).join("\n");
+  
+    let noteSection = "";
+    if (userNote) {
+      noteSection = `The user added this note about what they want help with: "${userNote}"`;
     }
-
+  
+    return `You are a code review assistant. The user selected lines ${lineStart}-${lineEnd} of the following ${language} code and requested: ${mode}.
+  
+    ${noteSection}
+  
+    Full code:
+    ${code}
+  
+    Selected snippet (lines ${lineStart}-${lineEnd}):
+    ${selectedSnippet}
+  
+    Analyze only the selected snippet, using the full code as context. Return findings as structured data.`;
+  }
+  
+  export function validateFindings(parsed) {
+    if (!parsed || !Array.isArray(parsed.findings)) {
+      throw new Error("AI_RESPONSE_INVALID");
+    }
     return parsed.findings;
   }
 
