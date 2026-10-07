@@ -1,4 +1,4 @@
-.card input {
+.auth-form input {
     width: 100%;
     background: var(--gray-600);
     border: none;
@@ -9,19 +9,19 @@
     padding: 10px 12px;
     margin-bottom: 10px;
   }
-  .error-text {
+  .auth-form .error-text {
     color: var(--error);
     font-size: 12px;
     margin: 4px 0 10px;
   }
-  .switch-link {
+  .auth-form .switch-link {
     font-size: 12px;
     color: var(--text-secondary);
     text-align: center;
     margin-top: 12px;
     cursor: pointer;
   }
-  button.primary {
+  .auth-form button.primary {
     width: 100%;
     background: var(--primary);
     color: #061224;

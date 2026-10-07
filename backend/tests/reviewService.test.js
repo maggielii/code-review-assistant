@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert";
-import { buildPrompt, validateFindings } from "../services/reviewService.js";
+import { buildPrompt, validateFindings, normalizeFindings } from "../services/reviewService.js";
 
 test("buildPrompt includes the mode and language", () => {
     const prompt = buildPrompt("const x = 1;", "javascript", "review", 1, 1, "");
@@ -50,3 +50,28 @@ test("validateFindings throws when findings is not an array", () => {
     }, /AI_RESPONSE_INVALID/);
 });
 
+test("review prompt tells the AI to return nothing when there are no problems", () => {
+    const prompt = buildPrompt("x", "javascript", "review", 1, 1, "");
+    assert.ok(prompt.includes("empty findings array"));
+  });
+  
+  test("normalizeFindings merges multiple explain findings into one", () => {
+    const result = normalizeFindings("explain", [
+      { lineStart: 1, lineEnd: 2, severity: "info", message: "Step one.", suggestion: "A" },
+      { lineStart: 3, lineEnd: 5, severity: "info", message: "Step two.", suggestion: "B" },
+    ]);
+    assert.strictEqual(result.length, 1);
+    assert.strictEqual(result[0].lineStart, 1);
+    assert.strictEqual(result[0].lineEnd, 5);
+    assert.ok(result[0].message.includes("Step one."));
+    assert.ok(result[0].message.includes("Step two."));
+  });
+  
+  test("normalizeFindings leaves other modes unchanged", () => {
+    const input = [{ message: "a" }, { message: "b" }];
+    assert.strictEqual(normalizeFindings("review", input).length, 2);
+  });
+  
+  test("normalizeFindings leaves an empty list alone", () => {
+    assert.deepStrictEqual(normalizeFindings("review", []), []);
+  });

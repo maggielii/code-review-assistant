@@ -3,6 +3,34 @@
 .finding-icon { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; font-family: 'Quicksand', sans-serif; }
 .finding-icon.error { background: var(--error); color: #3A1613; }
 .finding-icon.info { background: var(--info); color: #3A2410; }
+.finding-icon.success { background: var(--success); color: #0F2C22; }
+.empty-state { display: flex; align-items: center; gap: 12px; }
+.empty-state .empty-text { margin: 0; color: var(--text-primary); }
+.explanation-text {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+}
+.takeaway {
+  margin-top: 16px;
+  background: var(--gray-900);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.takeaway-label {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  color: #B3AAF0;
+}
+.takeaway p {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
 .finding-text { flex: 1; }
 .finding-text p { margin: 0; font-size: 12.5px; line-height: 1.6; }
 .finding-text .msg { color: var(--text-primary); }

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { API_URL } from './config.js'
 import BackgroundDecoration from './components/BackgroundDecoration.jsx'
 import ModeSelector from './components/ModeSelector.jsx'
 import CodeInputCard from './components/CodeInputCard.jsx'
@@ -6,7 +7,6 @@ import AuthForm from './components/AuthForm.jsx'
 import FindingsList from './components/FindingsList.jsx'
 import HistoryPage from './components/HistoryPage.jsx'
 import TabBar from './components/TabBar.jsx'
-import { API_URL } from './config.js'
 
 const MODES = [
   { id: 'review', title: 'Check', desc: 'Find bugs and style issues', icon: 'R', color: '#F0A868', bg: 'rgba(240,168,104,0.16)', textColor: '#3A2410' },
@@ -17,20 +17,27 @@ const MODES = [
 function App() {
   const [token, setToken] = useState(null)
   const [selectedMode, setSelectedMode] = useState(MODES[0])
+  const [language, setLanguage] = useState('javascript')
   const [code, setCode] = useState('')
   const [note, setNote] = useState('')
-  const [findings, setFindings] = useState([])
+  const [findings, setFindings] = useState(null)
+  const [resultMode, setResultMode] = useState('review')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [activeTab, setActiveTab] = useState('review')
 
   async function handleSubmit() {
+    if (!code.trim()) {
+      setSubmitError('Paste some code first.')
+      return
+    }
+
     setSubmitError('')
     setIsSubmitting(true)
     const lineCount = code.split('\n').length
 
     try {
-        const response = await fetch(`${API_URL}/api/reviews`, {
+      const response = await fetch(`${API_URL}/api/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -38,7 +45,7 @@ function App() {
         },
         body: JSON.stringify({
           code,
-          language: 'javascript',
+          language,
           mode: selectedMode.id,
           lineStart: 1,
           lineEnd: lineCount,
@@ -54,6 +61,7 @@ function App() {
       }
 
       setFindings(data.findings)
+      setResultMode(data.mode)
     } catch (err) {
       setSubmitError('Could not reach the server.')
     } finally {
@@ -80,25 +88,27 @@ function App() {
           <AuthForm onAuthSuccess={(newToken) => setToken(newToken)} />
         ) : (
           <>
-          <div className="fade-in" key={activeTab}>
-            {activeTab === 'review' ? (
-              <>
-                <ModeSelector modes={MODES} selectedId={selectedMode.id} onSelect={setSelectedMode} />
-                <CodeInputCard
-                  code={code}
-                  setCode={setCode}
-                  note={note}
-                  setNote={setNote}
-                  selectedMode={selectedMode}
-                  onSubmit={handleSubmit}
-                  isSubmitting={isSubmitting}
-                  error={submitError}
-                />
-                <FindingsList findings={findings} onResolve={handleResolve} />
-              </>
-            ) : (
-              <HistoryPage token={token} />
-            )}
+            <div className="fade-in" key={activeTab}>
+              {activeTab === 'review' ? (
+                <>
+                  <ModeSelector modes={MODES} selectedId={selectedMode.id} onSelect={setSelectedMode} />
+                  <CodeInputCard
+                    code={code}
+                    setCode={setCode}
+                    note={note}
+                    setNote={setNote}
+                    language={language}
+                    setLanguage={setLanguage}
+                    selectedMode={selectedMode}
+                    onSubmit={handleSubmit}
+                    isSubmitting={isSubmitting}
+                    error={submitError}
+                  />
+                  <FindingsList findings={findings} mode={resultMode} onResolve={handleResolve} />
+                </>
+              ) : (
+                <HistoryPage token={token} />
+              )}
             </div>
             <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
           </>

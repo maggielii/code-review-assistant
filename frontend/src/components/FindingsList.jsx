@@ -1,11 +1,48 @@
 import { useState } from 'react'
-import './FindingsList.css'
 import { getSeverityStyle } from '../severity.js'
+import './FindingsList.css'
 
-function FindingsList({ findings, onResolve }) {
+const TITLES = { review: 'Findings', explain: 'Explanation', refactor: 'Suggestions' }
+const EMPTY_MESSAGES = {
+  review: 'No errors found. This code looks good.',
+  explain: 'No explanation came back. Try running it again.',
+  refactor: 'No suggestions. This code already looks clean.',
+}
+
+function FindingsList({ findings, mode, onResolve }) {
   const [resolvedIds, setResolvedIds] = useState([])
 
-  if (!findings || findings.length === 0) return null
+  if (findings === null) return null
+
+  const title = TITLES[mode] || 'Findings'
+
+  if (findings.length === 0) {
+    return (
+      <div className="card">
+        <div className="card-label">{title}</div>
+        <div className="empty-state">
+          <div className="finding-icon success">✓</div>
+          <p className="empty-text">{EMPTY_MESSAGES[mode] || EMPTY_MESSAGES.review}</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (mode === 'explain') {
+    const explanation = findings[0]
+    return (
+      <div className="card">
+        <div className="card-label">{title}</div>
+        <p className="explanation-text">{explanation.message}</p>
+        {explanation.suggestion && (
+          <div className="takeaway">
+            <span className="takeaway-label">Key takeaway</span>
+            <p>{explanation.suggestion}</p>
+          </div>
+        )}
+      </div>
+    )
+  }
 
   const visible = findings.filter((finding) => !resolvedIds.includes(finding.id))
 
@@ -17,7 +54,7 @@ function FindingsList({ findings, onResolve }) {
   if (visible.length === 0) {
     return (
       <div className="card">
-        <div className="card-label">Findings</div>
+        <div className="card-label">{title}</div>
         <p className="empty-text">All findings resolved.</p>
       </div>
     )
@@ -25,7 +62,7 @@ function FindingsList({ findings, onResolve }) {
 
   return (
     <div className="card">
-      <div className="card-label">Findings</div>
+      <div className="card-label">{title}</div>
       {visible.map((finding) => (
         <div className="finding" key={finding.id}>
           <div className={`finding-icon ${getSeverityStyle(finding.severity).cls}`}>

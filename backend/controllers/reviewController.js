@@ -31,9 +31,9 @@ export async function createReview(req, res) {
     res.status(201).json(review);
   } catch (error) {
     if (error.message === "AI_REQUEST_FAILED") {
-      res.status(502).json({ error: "Could not reach the AI service. Please try again." });
+      res.status(502).json({ error: "Could not reach the service. Please wait and try again." });
     } else if (error.message === "AI_RESPONSE_INVALID") {
-      res.status(502).json({ error: "The AI returned an unexpected response. Please try again." });
+      res.status(502).json({ error: "Unexpected response. Please try again." });
     } else {
       res.status(500).json({ error: "Something went wrong. Please try again." });
     }
