@@ -7,6 +7,18 @@
 .finding-text p { margin: 0; font-size: 12.5px; line-height: 1.6; }
 .finding-text .msg { color: var(--text-primary); }
 .finding-text .loc { color: var(--text-secondary); font-family: 'JetBrains Mono', monospace; font-size: 10.5px; margin-top: 3px; }
+.finding-icon.warning { background: var(--warning); color: #3A2A0A; }
+.finding-icon.suggestion { background: var(--primary); color: #0F2236; }
+.suggestion-text {
+  margin-top: 8px !important;
+  background: var(--gray-900);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px !important;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+}
 .resolve-btn { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--gray-600); background: transparent; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 12px; cursor: pointer; flex-shrink: 0; }
 .resolve-btn:hover { border-color: var(--success); color: var(--success); }
 .empty-text { color: var(--text-secondary); font-size: 12.5px; }

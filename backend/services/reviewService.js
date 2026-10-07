@@ -58,26 +58,40 @@ export async function analyzeCode(code, language, mode, lineStart, lineEnd, user
     return validateFindings(parsed);
   }
 
+  const MODE_INSTRUCTIONS = {
+    review: `Your task: find real problems in the selected code. Look for bugs, syntax errors, logic mistakes, and style issues. Do NOT explain working code and do NOT suggest rewrites of code that already works.
+  For each finding, set severity to "error" (it breaks or will break), "warning" (risky or likely a bug), or "style" (readability or convention). Put what is wrong in "message" and the fix in "suggestion".`,
+  
+    explain: `Your task: help the user understand the selected code. Do NOT look for bugs and do NOT criticize it. Walk through what the code does, in the order it runs, in plain language for a beginner. Each finding is one step or concept.
+  Set severity to "info" for every finding. Put the explanation in "message" and a short key takeaway in "suggestion".`,
+  
+    refactor: `Your task: suggest cleaner versions of the selected code, assuming it already works. Do NOT report bugs. Focus on readability, naming, duplication, simplicity, and idiomatic patterns.
+  Set severity to "suggestion" for every finding. Put what could be improved and why in "message", and the improved code in "suggestion".`,
+  };
+
   export function buildPrompt(code, language, mode, lineStart, lineEnd, userNote) {
     const lines = code.split("\n");
     const selectedSnippet = lines.slice(lineStart - 1, lineEnd).join("\n");
+    const instructions = MODE_INSTRUCTIONS[mode] || MODE_INSTRUCTIONS.review;
   
     let noteSection = "";
     if (userNote) {
       noteSection = `The user added this note about what they want help with: "${userNote}"`;
     }
   
-    return `You are a code review assistant. The user selected lines ${lineStart}-${lineEnd} of the following ${language} code and requested: ${mode}.
+    return `You are a code assistant. The user selected lines ${lineStart}-${lineEnd} of the following ${language} code. Mode: ${mode}.
   
-    ${noteSection}
+  ${instructions}
   
-    Full code:
-    ${code}
+  ${noteSection}
   
-    Selected snippet (lines ${lineStart}-${lineEnd}):
-    ${selectedSnippet}
+  Full code:
+  ${code}
   
-    Analyze only the selected snippet, using the full code as context. Return findings as structured data.`;
+  Selected snippet (lines ${lineStart}-${lineEnd}):
+  ${selectedSnippet}
+  
+  Only report on the selected snippet, using the full code as context. Use line numbers that match the full code. Return findings as structured data.`;
   }
   
   export function validateFindings(parsed) {

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './FindingsList.css'
+import { getSeverityStyle } from '../severity.js'
 
 function FindingsList({ findings, onResolve }) {
   const [resolvedIds, setResolvedIds] = useState([])
@@ -27,11 +28,12 @@ function FindingsList({ findings, onResolve }) {
       <div className="card-label">Findings</div>
       {visible.map((finding) => (
         <div className="finding" key={finding.id}>
-          <div className={`finding-icon ${finding.severity === 'ERROR' ? 'error' : 'info'}`}>
-            {finding.severity === 'ERROR' ? '!' : 'i'}
+          <div className={`finding-icon ${getSeverityStyle(finding.severity).cls}`}>
+            {getSeverityStyle(finding.severity).icon}
           </div>
           <div className="finding-text">
             <p className="msg">{finding.message}</p>
+            {finding.suggestion && <p className="suggestion-text">{finding.suggestion}</p>}
             <p className="loc">
               Line {finding.lineStart}
               {finding.lineEnd !== finding.lineStart ? `–${finding.lineEnd}` : ''}
